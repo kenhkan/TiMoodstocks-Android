@@ -14,12 +14,12 @@ win.open();
 
 // TODO: write your module tests here
 var timoodstocks = require('com.kenhkan.timoodstocks');
-Ti.API.info("module is => " + timoodstocks);
+//Ti.API.info("module is => " + timoodstocks);
 
-label.text = timoodstocks.example();
+//label.text = timoodstocks.example();
 
-Ti.API.info("module exampleProp is => " + timoodstocks.exampleProp);
-timoodstocks.exampleProp = "This is a test value";
+//Ti.API.info("module exampleProp is => " + timoodstocks.exampleProp);
+//timoodstocks.exampleProp = "This is a test value";
 
 if (Ti.Platform.name == "android") {
 	var proxy = timoodstocks.createExample({

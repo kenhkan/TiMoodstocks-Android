@@ -8,55 +8,153 @@
  */
 package com.kenhkan.timoodstocks;
 
+import android.text.format.DateUtils;
+import android.app.Activity;
+
 import org.appcelerator.kroll.KrollModule;
 import org.appcelerator.kroll.annotations.Kroll;
 
 import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.kroll.common.Log;
 
+import com.moodstocks.android.MoodstocksError;
+import com.moodstocks.android.Scanner;
+
 @Kroll.module(name="Timoodstocks", id="com.kenhkan.timoodstocks")
-public class TimoodstocksModule extends KrollModule
+public class TimoodstocksModule extends KrollModule implements Scanner.SyncListener
 {
 
 	// Standard Debugging variables
 	private static final String TAG = "TimoodstocksModule";
 
-	// You can define constants with @Kroll.constant, for example:
-	// @Kroll.constant public static final String EXTERNAL_NAME = value;
+	private static Scanner scanner = null;
+  // State variables
+	private static boolean compatible = false;
+	private boolean loggedIn = false;
+	// Sync related variables
+	private long lastSynced = 0;
+	private static final long DAY = DateUtils.DAY_IN_MILLIS;
 	
 	public TimoodstocksModule()
 	{
 		super();
 	}
 
+	//----------------------
+	// Events
+	//----------------------
+
 	@Kroll.onAppCreate
 	public static void onAppCreate(TiApplication app)
 	{
-		Log.d(TAG, "inside onAppCreate");
-		// put module init code that needs to run when the application is created
+		compatible = Scanner.isCompatible();
+
+    try {
+      scanner = Scanner.get();
+    } catch (MoodstocksError e) {
+      e.log();
+    }
 	}
 
+	//// Methods
+	//@Kroll.method
+	//public String example()
+	//{
+	//  Log.d(TAG, "example called");
+	//  return "hello world";
+	//}
+	
+	//// Properties
+	//@Kroll.getProperty
+	//public String getExampleProp()
+	//{
+	//  Log.d(TAG, "get example property");
+	//  return "hello world";
+	//}
+	
+	
+	//@Kroll.setProperty
+	//public void setExampleProp(String value) {
+	//  Log.d(TAG, "set example property: " + value);
+	//}
+
+	//----------------------
 	// Methods
+	//----------------------
+
 	@Kroll.method
-	public String example()
-	{
-		Log.d(TAG, "example called");
-		return "hello world";
+  public boolean isCompatible() {
+    return this.compatible;
+  }
+
+	@Kroll.method
+  public boolean isLoggedIn() {
+    return this.loggedIn;
+  }
+
+	@Kroll.method
+	public void login(String apiKey, String apiSecret) {
+    try {
+      TiApplication appContext = TiApplication.getInstance();
+      scanner.open(appContext, apiKey, apiSecret);
+      this.loggedIn = true;
+    } catch (MoodstocksError e) {
+      this.loggedIn = false;
+      /* an error occurred while opening the scanner */
+      if (e.getErrorCode() == MoodstocksError.Code.CREDMISMATCH) {
+        // == DO NOT USE IN PRODUCTION: THIS IS A HELP MESSAGE FOR DEVELOPERS
+        String errmsg = "there is a problem with your key/secret pair: "+
+            "the current pair does NOT match with the one recorded within the on-disk datastore. "+
+            "This could happen if:\n"+
+            " * you have first build & run the app without replacing the default"+
+            " \"ApIkEy\" and \"ApIsEcReT\" pair, and later on replaced with your real key/secret,\n"+
+            " * or, you have first made a typo on the key/secret pair, build & run the"+
+            " app, and later on fixed the typo and re-deployed.\n"+
+            "\n"+
+            "To solve your problem:\n"+
+            " 1) uninstall the app from your device,\n"+
+            " 2) make sure to properly configure your key/secret pair within Scanner.java\n"+
+            " 3) re-build & run\n";
+        MoodstocksError err = new MoodstocksError(errmsg, MoodstocksError.Code.CREDMISMATCH);
+        err.log();
+        // == DO NOT USE IN PRODUCTION: THIS WAS A HELP MESSAGE FOR DEVELOPERS
+      } else {
+        e.log();
+      }
+    }
 	}
-	
-	// Properties
-	@Kroll.getProperty
-	public String getExampleProp()
-	{
-		Log.d(TAG, "get example property");
-		return "hello world";
+
+	//----------------------
+	// Scanner.SyncListener
+	//----------------------
+
+	/* The synchronization is performed seamlessly. Until it has ended,
+	 * the user can still use the online search as a fallback.
+	 */
+
+	@Override
+	public void onSyncStart() {
+		// Developer logs, do not use in production
+		Log.d(TAG, "[SYNC] Starting...");
 	}
-	
-	
-	@Kroll.setProperty
-	public void setExampleProp(String value) {
-		Log.d(TAG, "set example property: " + value);
+
+	@Override
+	public void onSyncComplete() {
+    lastSynced = System.currentTimeMillis();
+		// Developer logs, do not use in production
+		Log.d(TAG, "[SYNC] Complete!");
+	}
+
+	@Override
+	public void onSyncFailed(MoodstocksError e) {
+		// fail silently, the user has online search fallback.
+		e.log();
+	}
+
+	@Override
+	public void onSyncProgress(int total, int current) {
+		// Developer logs, do not use in production
+		Log.d(TAG, "[SYNC] "+current+"/"+total);
 	}
 
 }
-
