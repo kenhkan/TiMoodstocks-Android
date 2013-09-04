@@ -24,14 +24,23 @@ import android.app.Activity;
 
 // This proxy can be created by calling Timoodstocks.createExample({message: "hello world"})
 @Kroll.proxy(creatableInModule=TimoodstocksModule.class)
-public class ExampleProxy extends TiViewProxy
+public class ScannerView extends TiViewProxy
 {
 	// Standard Debugging variables
-	private static final String TAG = "ExampleProxy";
+	private static final String TAG = "ScannerView";
 
-	private class ExampleView extends TiUIView
+	public ScannerView()
 	{
-		public ExampleView(TiViewProxy proxy) {
+		super();
+	}
+
+	//----------------------
+	// The UI view itself
+	//----------------------
+
+	private class ScannerUIView extends TiUIView
+	{
+		public ScannerUIView(TiViewProxy proxy) {
 			super(proxy);
 			LayoutArrangement arrangement = LayoutArrangement.DEFAULT;
 
@@ -53,49 +62,12 @@ public class ExampleProxy extends TiViewProxy
 		}
 	}
 
-	// Constructor
-	public ExampleProxy()
-	{
-		super();
-	}
-
 	@Override
 	public TiUIView createView(Activity activity)
 	{
-		TiUIView view = new ExampleView(this);
+		TiUIView view = new ScannerUIView(this);
 		view.getLayoutParams().autoFillsHeight = true;
 		view.getLayoutParams().autoFillsWidth = true;
 		return view;
-	}
-
-	// Handle creation options
-	@Override
-	public void handleCreationDict(KrollDict options)
-	{
-		super.handleCreationDict(options);
-		
-		if (options.containsKey("message")) {
-			Log.d(TAG, "example created with message: " + options.get("message"));
-		}
-	}
-	
-	// Methods
-	@Kroll.method
-	public void printMessage(String message)
-	{
-		Log.d(TAG, "printing message: " + message);
-	}
-
-
-	@Kroll.getProperty @Kroll.method
-	public String getMessage()
-	{
-        return "Hello World from my module";
-	}
-
-	@Kroll.setProperty @Kroll.method
-	public void setMessage(String message)
-	{
-	    Log.d(TAG, "Tried setting module message to: " + message);
 	}
 }
