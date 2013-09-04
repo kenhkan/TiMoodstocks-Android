@@ -51,9 +51,33 @@ public class TimoodstocksModule extends KrollModule implements Scanner.SyncListe
 
     try {
       scanner = Scanner.get();
-    } catch (MoodstocksError e) {
-      e.log();
-    }
+    } catch (MoodstocksError e) {}
+	}
+
+	@Override
+	public void onResume(Activity activity) {
+		/* perform a sync if:
+		 * - the app is started either for the first time,
+		 *   or has been killed and is started back.
+		 * - the app is resumed from the background AND
+		 *   has not been synced for more than one day.
+		 */
+		super.onResume(activity);
+		if (compatible && System.currentTimeMillis() - lastSynced > DAY)
+			scanner.sync(this);
+	}
+
+	@Override
+	public void onDestroy(Activity activity) {
+		super.onDestroy(activity);
+		if (compatible) {
+			try {
+				/* you must close the scanner before exiting */
+				scanner.close();
+			} catch (MoodstocksError e) {
+				e.log();
+			}
+		}
 	}
 
 	//----------------------
