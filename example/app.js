@@ -1,10 +1,4 @@
-// This is a test harness for your module
-// You should do something interesting in this harness 
-// to test out the module and to provide instructions 
-// to users on how to use it by example.
-
-
-// open a single window
+// Open a single window
 var win = Ti.UI.createWindow({
 	backgroundColor:'white'
 });
@@ -12,14 +6,15 @@ var label = Ti.UI.createLabel();
 win.add(label);
 win.open();
 
-// TODO: write your module tests here
+// Instantiate
 var timoodstocks = require('com.kenhkan.timoodstocks');
-//Ti.API.info("module is => " + timoodstocks);
+Ti.API.info("Module is: " + timoodstocks);
+Ti.API.info("Is it compatible? " + timoodstocks.isCompatible());
+Ti.API.info("Are we logged in? " + timoodstocks.isLoggedIn());
 
-//label.text = timoodstocks.example();
-
-//Ti.API.info("module exampleProp is => " + timoodstocks.exampleProp);
-//timoodstocks.exampleProp = "This is a test value";
+// Use your API key/secret pair
+timoodstocks.login('key', 'secret');
+Ti.API.info("Are we logged in now? " + timoodstocks.isLoggedIn());
 
 if (Ti.Platform.name == "android") {
 	var proxy = timoodstocks.createExample({
