@@ -1,5 +1,6 @@
 tmp
 bin
+libs
 build
 *.zip
 .apt_generated
