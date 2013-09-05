@@ -31,6 +31,9 @@ public class TimoodstocksModule extends KrollModule
 	// Standard Debugging variables
 	private static final String TAG = "TimoodstocksModule";
 
+  // Make scanner view a singleton
+  private static TimoodstocksModule singleton;
+
 	private static Scanner scanner = null;
   // State variables
 	private static boolean compatible = false;
@@ -42,7 +45,12 @@ public class TimoodstocksModule extends KrollModule
 	public TimoodstocksModule()
 	{
 		super();
+    singleton = this;
 	}
+
+  public static TimoodstocksModule getSingleton() {
+    return singleton;
+  }
 
 	//----------------------
 	// Events
@@ -60,30 +68,24 @@ public class TimoodstocksModule extends KrollModule
 
 	@Override
 	public void onResume(Activity activity) {
+		super.onResume(activity);
+    ScannerView.getSingleton().resume();
+
 		/* perform a sync if:
 		 * - the app is started either for the first time,
 		 *   or has been killed and is started back.
 		 * - the app is resumed from the background AND
 		 *   has not been synced for more than one day.
 		 */
-		super.onResume(activity);
-
-    if (compatible) {
-      ScannerView.getSingleton().resume();
-
-      if (System.currentTimeMillis() - lastSynced > DAY) {
-        scanner.sync(this);
-      }
+    if (System.currentTimeMillis() - lastSynced > DAY) {
+      sync();
     }
 	}
 
   @Override
   public void onPause(Activity activity) {
     super.onPause(activity);
-
-    if (compatible) {
-      ScannerView.getSingleton().pause();
-    }
+    ScannerView.getSingleton().pause();
   }
 
 	@Override
@@ -113,6 +115,11 @@ public class TimoodstocksModule extends KrollModule
     return this.loggedIn;
   }
 
+  @Kroll.method
+  public boolean isOperational() {
+    return this.compatible && this.loggedIn;
+  }
+
 	@Kroll.method
 	public void login(String apiKey, String apiSecret) {
     try {
@@ -124,6 +131,13 @@ public class TimoodstocksModule extends KrollModule
       notifyError("scannerOpenFailed", e);
     }
 	}
+
+	@Kroll.method
+  public void sync() {
+    if (isOperational()) {
+      scanner.sync(this);
+    }
+  }
 
 	//----------------------
 	// Scanner.SyncListener

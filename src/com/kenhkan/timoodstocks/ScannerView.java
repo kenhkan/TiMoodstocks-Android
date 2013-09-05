@@ -41,11 +41,13 @@ public class ScannerView extends TiViewProxy implements
 
 	private int ScanOptions = Result.Type.IMAGE;
 	private ScannerSession session;
+  private TimoodstocksModule module;
 
 	public ScannerView()
 	{
 		super();
     singleton = this;
+    module = TimoodstocksModule.getSingleton();
 	}
 
   public static ScannerView getSingleton() {
@@ -98,17 +100,34 @@ public class ScannerView extends TiViewProxy implements
 
   @Kroll.method
   public boolean pause() {
-    return session.pause();
+    if (module.isOperational()) {
+      return session.pause();
+    } else {
+      return false;
+    }
   }
 
   @Kroll.method
   public boolean resume() {
-    return session.resume();
+    if (module.isOperational()) {
+      return session.resume();
+    } else {
+      return false;
+    }
   }
 
   @Kroll.method
   public boolean snap() {
-    return session.snap();
+    if (module.isOperational()) {
+      return session.snap();
+    } else {
+      return false;
+    }
+  }
+
+  @Kroll.method
+  public void sync() {
+    module.sync();
   }
 
 	//-------------------------
@@ -117,9 +136,11 @@ public class ScannerView extends TiViewProxy implements
 
 	@Override
 	public void onScanComplete(Result result) {
-    HashMap data = new HashMap();
-    data.put("value", result.getValue());
-    fireEvent("scanComplete", data);
+    if (result!=null) {
+      HashMap data = new HashMap();
+      data.put("value", result.getValue());
+      fireEvent("scanComplete", data);
+    }
 	}
 
 	@Override
@@ -134,9 +155,11 @@ public class ScannerView extends TiViewProxy implements
 
 	@Override
 	public void onApiSearchComplete(Result result) {
-    HashMap data = new HashMap();
-    data.put("value", result.getValue());
-    fireEvent("searchComplete", data);
+    if (result!=null) {
+      HashMap data = new HashMap();
+      data.put("value", result.getValue());
+      fireEvent("searchComplete", data);
+    }
 	}
 
 	@Override
