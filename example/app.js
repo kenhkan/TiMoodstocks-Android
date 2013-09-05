@@ -1,16 +1,14 @@
 // Open a single window
 var win = Ti.UI.createWindow();
 var view = Ti.UI.createScrollView({
-  bottom: 0,
-  width: Ti.UI.FILL,
-  height: 200
+  backgroundColor: 'black',
+  opacity: 0.70
 });
 var label = Ti.UI.createLabel({
-  backgroundColor: 'black',
   color: 'white',
   width: Ti.UI.FILL,
   height: Ti.UI.FILL,
-  text: '...'
+  text: 'Starting...'
 });
 
 // Helper
@@ -54,12 +52,7 @@ Ti.API.info("Are we logged in now? " + timoodstocks.isLoggedIn());
 
 if (Ti.Platform.name == "android") {
   // The scanner view
-	var scanner = timoodstocks.createScannerView({
-		width: Ti.UI.FILL,
-		height: Ti.UI.FILL,
-		left: 0,
-    bottom: 200
-	});
+	var scanner = timoodstocks.createScannerView();
 
   // Events
   scanner.addEventListener('scanComplete', function(result){
@@ -79,12 +72,6 @@ if (Ti.Platform.name == "android") {
   scanner.addEventListener('searchFailed', function(e){
     log('Searching failed');
     log(e.code+' : '+e.message);
-  });
-
-  // Snap on tap
-  scanner.addEventListener('click', function(e){
-    log('Snapping...');
-    scanner.snap();
   });
 
 	win.add(scanner);
