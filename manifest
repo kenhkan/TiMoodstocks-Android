@@ -2,12 +2,12 @@
 # this is your module manifest and used by Titanium
 # during compilation, packaging, distribution, etc.
 #
-version: 0.1
+version: 0.1.0
 apiversion: 2
-description: My module
-author: Your Name
-license: Specify your license
-copyright: Copyright (c) 2013 by Your Company
+description: Titanium native module wrapper of Moodstocks image scanner SDK on Android
+author: Kenneth Kan
+license: MIT License
+copyright: Copyright (c) 2013 by Kenneth Kan
 
 
 # these should not be edited
