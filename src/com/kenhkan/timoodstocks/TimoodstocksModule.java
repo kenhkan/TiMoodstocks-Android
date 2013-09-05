@@ -8,6 +8,8 @@
  */
 package com.kenhkan.timoodstocks;
 
+import java.util.HashMap;
+
 import android.text.format.DateUtils;
 import android.app.Activity;
 
@@ -73,7 +75,9 @@ public class TimoodstocksModule extends KrollModule
 			try {
 				/* you must close the scanner before exiting */
 				scanner.close();
-			} catch (MoodstocksError e) {}
+			} catch (MoodstocksError e) {
+        notifyError("scannerCloseFailed", e);
+      }
 		}
 	}
 
@@ -99,6 +103,7 @@ public class TimoodstocksModule extends KrollModule
       this.loggedIn = true;
     } catch (MoodstocksError e) {
       this.loggedIn = false;
+      notifyError("scannerOpenFailed", e);
     }
 	}
 
@@ -112,19 +117,33 @@ public class TimoodstocksModule extends KrollModule
 
 	@Override
 	public void onSyncStart() {
+    this.fireEvent("syncStarted", new HashMap());
 	}
 
 	@Override
 	public void onSyncComplete() {
     lastSynced = System.currentTimeMillis();
+    this.fireEvent("syncCompleted", new HashMap());
 	}
 
 	@Override
 	public void onSyncFailed(MoodstocksError e) {
+    notifyError("syncFailed", e);
 	}
 
 	@Override
 	public void onSyncProgress(int total, int current) {
+    HashMap progress = new HashMap();
+    progress.put("total", total);
+    progress.put("current", current);
+    this.fireEvent("syncInProgress", progress);
 	}
 
+	//----------------------
+	// Helpers
+	//----------------------
+
+  private void notifyError(String event, MoodstocksError e) {
+    fireEvent(event, e);
+  }
 }
