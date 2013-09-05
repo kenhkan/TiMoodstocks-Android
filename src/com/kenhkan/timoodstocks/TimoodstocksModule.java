@@ -20,6 +20,7 @@ import org.appcelerator.titanium.TiApplication;
 import com.moodstocks.android.MoodstocksError;
 import com.moodstocks.android.Scanner;
 
+
 @Kroll.module(name="Timoodstocks", id="com.kenhkan.timoodstocks")
 public class TimoodstocksModule extends KrollModule
   implements Scanner.SyncListener
