@@ -20,6 +20,8 @@ import org.appcelerator.titanium.TiApplication;
 import com.moodstocks.android.MoodstocksError;
 import com.moodstocks.android.Scanner;
 
+import com.kenhkan.timoodstocks.ScannerView;
+
 
 @Kroll.module(name="Timoodstocks", id="com.kenhkan.timoodstocks")
 public class TimoodstocksModule extends KrollModule
@@ -65,9 +67,24 @@ public class TimoodstocksModule extends KrollModule
 		 *   has not been synced for more than one day.
 		 */
 		super.onResume(activity);
-		if (compatible && System.currentTimeMillis() - lastSynced > DAY)
-			scanner.sync(this);
+
+    if (compatible) {
+      ScannerView.getSingleton().resume();
+
+      if (System.currentTimeMillis() - lastSynced > DAY) {
+        scanner.sync(this);
+      }
+    }
 	}
+
+  @Override
+  public void onPause(Activity activity) {
+    super.onPause(activity);
+
+    if (compatible) {
+      ScannerView.getSingleton().pause();
+    }
+  }
 
 	@Override
 	public void onDestroy(Activity activity) {
@@ -118,13 +135,13 @@ public class TimoodstocksModule extends KrollModule
 
 	@Override
 	public void onSyncStart() {
-    this.fireEvent("syncStarted", new HashMap());
+    this.fireEvent("syncStarted", null);
 	}
 
 	@Override
 	public void onSyncComplete() {
     lastSynced = System.currentTimeMillis();
-    this.fireEvent("syncCompleted", new HashMap());
+    this.fireEvent("syncCompleted", null);
 	}
 
 	@Override
@@ -145,6 +162,9 @@ public class TimoodstocksModule extends KrollModule
 	//----------------------
 
   private void notifyError(String event, MoodstocksError e) {
-    fireEvent(event, e);
+    HashMap error = new HashMap();
+    error.put("message", e.toString());
+    error.put("code", e.getErrorCode());
+    fireEvent(event, error);
   }
 }

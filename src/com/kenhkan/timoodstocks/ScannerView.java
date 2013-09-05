@@ -8,6 +8,8 @@
  */
 package com.kenhkan.timoodstocks;
 
+import java.util.HashMap;
+
 import android.app.Activity;
 import android.view.SurfaceView;
 
@@ -34,13 +36,21 @@ public class ScannerView extends TiViewProxy implements
 	// Standard Debugging variables
 	private static final String TAG = "ScannerView";
 
+  // Make scanner view a singleton
+  private static ScannerView singleton;
+
 	private int ScanOptions = Result.Type.IMAGE;
 	private ScannerSession session;
 
 	public ScannerView()
 	{
 		super();
+    singleton = this;
 	}
+
+  public static ScannerView getSingleton() {
+    return singleton;
+  }
 
 	//----------------------
 	// The UI view itself
@@ -83,26 +93,65 @@ public class ScannerView extends TiViewProxy implements
 	}
 
 	//-------------------------
+	// Methods
+	//-------------------------
+
+  @Kroll.method
+  public boolean pause() {
+    return session.pause();
+  }
+
+  @Kroll.method
+  public boolean resume() {
+    return session.resume();
+  }
+
+  @Kroll.method
+  public boolean snap() {
+    return session.snap();
+  }
+
+	//-------------------------
 	// ScannerSession.Listener
 	//-------------------------
 
 	@Override
 	public void onScanComplete(Result result) {
+    HashMap data = new HashMap();
+    data.put("value", result.getValue());
+    fireEvent("scanComplete", data);
 	}
 
 	@Override
-	public void onScanFailed(MoodstocksError error) {
+	public void onScanFailed(MoodstocksError e) {
+    notifyError("scanFailed", e);
 	}
 
 	@Override
 	public void onApiSearchStart() {
+    fireEvent("searchStart", null);
 	}
 
 	@Override
 	public void onApiSearchComplete(Result result) {
+    HashMap data = new HashMap();
+    data.put("value", result.getValue());
+    fireEvent("searchComplete", data);
 	}
 
 	@Override
 	public void onApiSearchFailed(MoodstocksError e) {
+    notifyError("searchFailed", e);
 	}
+
+	//----------------------
+	// Helpers
+	//----------------------
+
+  private void notifyError(String event, MoodstocksError e) {
+    HashMap error = new HashMap();
+    error.put("message", e.toString());
+    error.put("code", e.getErrorCode());
+    fireEvent(event, error);
+  }
 }
