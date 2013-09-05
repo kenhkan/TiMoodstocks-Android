@@ -48,12 +48,8 @@ public class ScannerView extends TiViewProxy implements
 
 	private class ScannerUIView extends TiUIView
 	{
-		public ScannerUIView(ScannerView proxy) {
+		public ScannerUIView(ScannerView proxy, Activity activity) {
 			super(proxy);
-
-      // Get current activity
-      TiApplication appContext = TiApplication.getInstance();
-      Activity activity = appContext.getCurrentActivity();
 
       // Create view for camera preview
       SurfaceView preview = new SurfaceView(activity);
@@ -80,7 +76,7 @@ public class ScannerView extends TiViewProxy implements
 	@Override
 	public TiUIView createView(Activity activity)
 	{
-		TiUIView view = new ScannerUIView(this);
+		TiUIView view = new ScannerUIView(this, activity);
 		view.getLayoutParams().autoFillsHeight = true;
 		view.getLayoutParams().autoFillsWidth = true;
 		return view;
