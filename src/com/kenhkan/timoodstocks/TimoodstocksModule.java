@@ -13,15 +13,14 @@ import android.app.Activity;
 
 import org.appcelerator.kroll.KrollModule;
 import org.appcelerator.kroll.annotations.Kroll;
-
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.kroll.common.Log;
 
 import com.moodstocks.android.MoodstocksError;
 import com.moodstocks.android.Scanner;
 
 @Kroll.module(name="Timoodstocks", id="com.kenhkan.timoodstocks")
-public class TimoodstocksModule extends KrollModule implements Scanner.SyncListener
+public class TimoodstocksModule extends KrollModule
+  implements Scanner.SyncListener
 {
 
 	// Standard Debugging variables
@@ -74,9 +73,7 @@ public class TimoodstocksModule extends KrollModule implements Scanner.SyncListe
 			try {
 				/* you must close the scanner before exiting */
 				scanner.close();
-			} catch (MoodstocksError e) {
-				e.log();
-			}
+			} catch (MoodstocksError e) {}
 		}
 	}
 

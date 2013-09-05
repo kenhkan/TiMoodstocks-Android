@@ -8,26 +8,34 @@
  */
 package com.kenhkan.timoodstocks;
 
+import android.app.Activity;
+import android.view.SurfaceView;
+
 import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.titanium.TiC;
-import org.appcelerator.titanium.util.Log;
 import org.appcelerator.titanium.util.TiConvert;
 import org.appcelerator.titanium.proxy.TiViewProxy;
 import org.appcelerator.titanium.view.TiCompositeLayout;
 import org.appcelerator.titanium.view.TiCompositeLayout.LayoutArrangement;
 import org.appcelerator.titanium.view.TiUIView;
+import org.appcelerator.titanium.TiApplication;
 
-import android.app.Activity;
+import com.moodstocks.android.MoodstocksError;
+import com.moodstocks.android.Result;
+import com.moodstocks.android.ScannerSession;
 
 
-// This proxy can be created by calling Timoodstocks.createExample({message: "hello world"})
 @Kroll.proxy(creatableInModule=TimoodstocksModule.class)
-public class ScannerView extends TiViewProxy
+public class ScannerView extends TiViewProxy implements
+	ScannerSession.Listener
 {
 	// Standard Debugging variables
 	private static final String TAG = "ScannerView";
+
+	private int ScanOptions = Result.Type.IMAGE;
+	private ScannerSession session;
 
 	public ScannerView()
 	{
@@ -40,19 +48,26 @@ public class ScannerView extends TiViewProxy
 
 	private class ScannerUIView extends TiUIView
 	{
-		public ScannerUIView(TiViewProxy proxy) {
+		public ScannerUIView(ScannerView proxy) {
 			super(proxy);
-			LayoutArrangement arrangement = LayoutArrangement.DEFAULT;
 
-			if (proxy.hasProperty(TiC.PROPERTY_LAYOUT)) {
-				String layoutProperty = TiConvert.toString(proxy.getProperty(TiC.PROPERTY_LAYOUT));
-				if (layoutProperty.equals(TiC.LAYOUT_HORIZONTAL)) {
-					arrangement = LayoutArrangement.HORIZONTAL;
-				} else if (layoutProperty.equals(TiC.LAYOUT_VERTICAL)) {
-					arrangement = LayoutArrangement.VERTICAL;
-				}
-			}
-			setNativeView(new TiCompositeLayout(proxy.getActivity(), arrangement));
+      // Get current activity
+      TiApplication appContext = TiApplication.getInstance();
+      Activity activity = appContext.getCurrentActivity();
+
+      // Create view for camera preview
+      SurfaceView preview = new SurfaceView(activity);
+
+      // Create a scanner session
+      try {
+        session = new ScannerSession(activity, (ScannerSession.Listener) proxy, preview);
+      } catch (MoodstocksError error) {}
+
+      // Set session options
+      session.setOptions(ScanOptions);
+
+      // Add view
+			setNativeView(preview);
 		}
 
 		@Override
@@ -69,5 +84,29 @@ public class ScannerView extends TiViewProxy
 		view.getLayoutParams().autoFillsHeight = true;
 		view.getLayoutParams().autoFillsWidth = true;
 		return view;
+	}
+
+	//-------------------------
+	// ScannerSession.Listener
+	//-------------------------
+
+	@Override
+	public void onScanComplete(Result result) {
+	}
+
+	@Override
+	public void onScanFailed(MoodstocksError error) {
+	}
+
+	@Override
+	public void onApiSearchStart() {
+	}
+
+	@Override
+	public void onApiSearchComplete(Result result) {
+	}
+
+	@Override
+	public void onApiSearchFailed(MoodstocksError e) {
 	}
 }
