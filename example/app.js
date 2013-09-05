@@ -2,13 +2,17 @@
 var win = Ti.UI.createWindow();
 var view = Ti.UI.createScrollView({
   backgroundColor: 'black',
-  opacity: 0.70
+  opacity: 0.80
 });
 var label = Ti.UI.createLabel({
   color: 'white',
   width: Ti.UI.FILL,
   height: Ti.UI.FILL,
-  text: 'Starting...'
+  text: 'Starting...',
+  left: 10,
+  right: 10,
+  top: 10,
+  bottom: 10,
 });
 
 // Helper
@@ -33,13 +37,17 @@ timoodstocks.addEventListener('syncStarted', function(){
 });
 timoodstocks.addEventListener('syncCompleted', function(){
   log('Completed to sync database from Moodstocks to cache');
+
+  // Make sure we start scanning!
+  scanner.resume();
 });
 timoodstocks.addEventListener('syncFailed', function(e){
   log('Failed to sync database from Moodstocks to cache');
   log(e.code+' : '+e.message);
 });
-timoodstocks.addEventListener('syncInProgress', function(){
+timoodstocks.addEventListener('syncInProgress', function(progress){
   log('Syncing image database');
+  log(progress.current+'/'+progress.total);
 });
 
 // Statuses
@@ -81,3 +89,6 @@ if (Ti.Platform.name == "android") {
 view.add(label);
 win.add(view);
 win.open();
+
+// Sync with Moodstocks
+scanner.sync()
