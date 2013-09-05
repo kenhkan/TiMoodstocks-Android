@@ -1,38 +1,47 @@
 // Open a single window
 var win = Ti.UI.createWindow();
-var view = Ti.UI.createView({
-  backgroundColor: 'blue'
+var view = Ti.UI.createScrollView({
+  bottom: 0,
+  width: Ti.UI.FILL,
+  height: 200
 });
 var label = Ti.UI.createLabel({
-  backgroundColor: 'red',
-  left: 0,
-  top: 0,
-  width: 100,
-  height: 100,
-  text: 'label'
+  backgroundColor: 'black',
+  color: 'white',
+  width: Ti.UI.FILL,
+  height: Ti.UI.FILL,
+  text: '...'
 });
 
-// Instantiate
+// Helper
+log = function(out){
+  label.setText(label.getText()+'\n'+out);
+};
+
+// The module
 var timoodstocks = require('com.kenhkan.timoodstocks');
 
 // Events
-timoodstocks.addEventListener('scannerOpenFailed', function(){
-  label.setText('Failed to open scanner from Moodstocks');
+timoodstocks.addEventListener('scannerOpenFailed', function(e){
+  log('Failed to open scanner');
+  log(e.code+' : '+e.message);
 });
-timoodstocks.addEventListener('scannerCloseFailed', function(){
-  label.setText('Failed to close scanner from Moodstocks');
+timoodstocks.addEventListener('scannerCloseFailed', function(e){
+  log('Failed to close scanner');
+  log(e.code+' : '+e.message);
 });
 timoodstocks.addEventListener('syncStarted', function(){
-  label.setText('Started to sync database from Moodstocks to cache');
+  log('Started to sync database from Moodstocks to cache');
 });
 timoodstocks.addEventListener('syncCompleted', function(){
-  label.setText('Completed to sync database from Moodstocks to cache');
+  log('Completed to sync database from Moodstocks to cache');
 });
-timoodstocks.addEventListener('syncFailed', function(){
-  label.setText('Failed to sync database from Moodstocks to cache');
+timoodstocks.addEventListener('syncFailed', function(e){
+  log('Failed to sync database from Moodstocks to cache');
+  log(e.code+' : '+e.message);
 });
 timoodstocks.addEventListener('syncInProgress', function(){
-  label.setText('Syncing image database');
+  log('Syncing image database');
 });
 
 // Statuses
@@ -44,12 +53,40 @@ timoodstocks.login('key', 'secret');
 Ti.API.info("Are we logged in now? " + timoodstocks.isLoggedIn());
 
 if (Ti.Platform.name == "android") {
+  // The scanner view
 	var scanner = timoodstocks.createScannerView({
 		width: Ti.UI.FILL,
 		height: Ti.UI.FILL,
-		top: 0,
-		left: 0
+		left: 0,
+    bottom: 200
 	});
+
+  // Events
+  scanner.addEventListener('scanComplete', function(result){
+    log('Scanning completed: '+result.value);
+  });
+  scanner.addEventListener('scanFailed', function(e){
+    log('Scanning failed');
+    log(e.code+' : '+e.message);
+  });
+  scanner.addEventListener('searchStart', function(e){
+    log('Searching started');
+    log(e.code+' : '+e.message);
+  });
+  scanner.addEventListener('searchComplete', function(result){
+    log('Searching completed: '+result.value);
+  });
+  scanner.addEventListener('searchFailed', function(e){
+    log('Searching failed');
+    log(e.code+' : '+e.message);
+  });
+
+  // Snap on tap
+  scanner.addEventListener('click', function(e){
+    log('Snapping...');
+    scanner.snap();
+  });
+
 	win.add(scanner);
 }
 
