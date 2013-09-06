@@ -100,7 +100,7 @@ public class ScannerView extends TiViewProxy implements
 
   @Kroll.method
   public boolean pause() {
-    if (module.isOperational()) {
+    if (session!=null && module.isOperational()) {
       return session.pause();
     } else {
       return false;
@@ -109,7 +109,7 @@ public class ScannerView extends TiViewProxy implements
 
   @Kroll.method
   public boolean resume() {
-    if (module.isOperational()) {
+    if (session!=null && module.isOperational()) {
       return session.resume();
     } else {
       return false;
@@ -118,7 +118,7 @@ public class ScannerView extends TiViewProxy implements
 
   @Kroll.method
   public boolean snap() {
-    if (module.isOperational()) {
+    if (session!=null && module.isOperational()) {
       return session.snap();
     } else {
       return false;
