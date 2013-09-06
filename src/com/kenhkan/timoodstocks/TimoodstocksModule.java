@@ -38,9 +38,6 @@ public class TimoodstocksModule extends KrollModule
   // State variables
 	private static boolean compatible = false;
 	private boolean loggedIn = false;
-	// Sync related variables
-	private long lastSynced = 0;
-	private static final long DAY = DateUtils.DAY_IN_MILLIS;
 	
 	public TimoodstocksModule()
 	{
@@ -70,16 +67,7 @@ public class TimoodstocksModule extends KrollModule
 	public void onResume(Activity activity) {
 		super.onResume(activity);
     ScannerView.getSingleton().resume();
-
-		/* perform a sync if:
-		 * - the app is started either for the first time,
-		 *   or has been killed and is started back.
-		 * - the app is resumed from the background AND
-		 *   has not been synced for more than one day.
-		 */
-    if (System.currentTimeMillis() - lastSynced > DAY) {
-      sync();
-    }
+    sync();
 	}
 
   @Override
@@ -154,7 +142,6 @@ public class TimoodstocksModule extends KrollModule
 
 	@Override
 	public void onSyncComplete() {
-    lastSynced = System.currentTimeMillis();
     this.fireEvent("syncCompleted", null);
 	}
 
