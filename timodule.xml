@@ -10,6 +10,10 @@
     <tool-api-level>8</tool-api-level>
     <abi>all</abi>
     <manifest>
+      <application>
+        <activity android:configChanges="keyboardHidden" android:name="org.appcelerator.titanium.TiActivity" android:screenOrientation="portrait"/>
+      </application>
+
       <uses-permission android:name="android.permission.INTERNET" />
       <uses-permission android:name="android.permission.CAMERA" />
       <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />

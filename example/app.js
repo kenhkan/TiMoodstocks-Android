@@ -1,5 +1,8 @@
-// Open a single window
-var win = Ti.UI.createWindow();
+// Open a heavy-weight window
+var win = Ti.UI.createWindow({
+  fullscreen: false,
+  navBarHidden: true
+});
 var view = Ti.UI.createScrollView({
   backgroundColor: 'black',
   opacity: 0.80
