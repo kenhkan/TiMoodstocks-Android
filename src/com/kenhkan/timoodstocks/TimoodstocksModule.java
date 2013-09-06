@@ -15,6 +15,7 @@ import android.app.Activity;
 
 import org.appcelerator.kroll.KrollModule;
 import org.appcelerator.kroll.annotations.Kroll;
+import org.appcelerator.kroll.common.Log;
 import org.appcelerator.titanium.TiApplication;
 
 import com.moodstocks.android.MoodstocksError;
@@ -60,7 +61,9 @@ public class TimoodstocksModule extends KrollModule
 
     try {
       scanner = Scanner.get();
-    } catch (MoodstocksError e) {}
+    } catch (MoodstocksError e) {
+      Log.e("timoodstocks.scannerCreateFailed", e.toString());
+    }
 	}
 
 	@Override
@@ -84,6 +87,9 @@ public class TimoodstocksModule extends KrollModule
 				/* you must close the scanner before exiting */
 				scanner.close();
 			} catch (MoodstocksError e) {
+        // Output to log
+        Log.e("timoodstocks.scannerCloseFailed", e.toString());
+        // Also fire an event
         notifyError("scannerCloseFailed", e);
       }
 		}
@@ -111,11 +117,14 @@ public class TimoodstocksModule extends KrollModule
 	@Kroll.method
 	public void login(String apiKey, String apiSecret) {
     try {
+      this.loggedIn = true;
       TiApplication appContext = TiApplication.getInstance();
       scanner.open(appContext, apiKey, apiSecret);
-      this.loggedIn = true;
     } catch (MoodstocksError e) {
       this.loggedIn = false;
+      // Output to log
+      Log.e("timoodstocks.scannerOpenFailed", e.toString());
+      // Also fire an event
       notifyError("scannerOpenFailed", e);
     }
 	}

@@ -16,6 +16,7 @@ import android.view.SurfaceView;
 import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.kroll.annotations.Kroll;
+import org.appcelerator.kroll.common.Log;
 import org.appcelerator.titanium.TiC;
 import org.appcelerator.titanium.util.TiConvert;
 import org.appcelerator.titanium.proxy.TiViewProxy;
@@ -69,7 +70,9 @@ public class ScannerView extends TiViewProxy implements
       // Create a scanner session
       try {
         session = new ScannerSession(activity, (ScannerSession.Listener) proxy, preview);
-      } catch (MoodstocksError error) {}
+      } catch (MoodstocksError error) {
+        Log.e("timoodstocks.sessionCreateFailed", error.toString());
+      }
 
       // Set session options
       session.setOptions(ScanOptions);
@@ -100,29 +103,41 @@ public class ScannerView extends TiViewProxy implements
 
   @Kroll.method
   public boolean pause() {
-    if (session!=null && module.isOperational()) {
+    if (session==null) {
+      Log.e("timoodstocks.noSessionFound", "");
+    } else if (module.isOperational()) {
       return session.pause();
     } else {
-      return false;
+      Log.e("timoodstocks.notOperational", "");
     }
+
+    return false;
   }
 
   @Kroll.method
   public boolean resume() {
-    if (session!=null && module.isOperational()) {
+    if (session==null) {
+      Log.e("timoodstocks.noSessionFound", "");
+    } else if (module.isOperational()) {
       return session.resume();
     } else {
-      return false;
+      Log.e("timoodstocks.notOperational", "");
     }
+
+    return false;
   }
 
   @Kroll.method
   public boolean snap() {
-    if (session!=null && module.isOperational()) {
+    if (session==null) {
+      Log.e("timoodstocks.noSessionFound", "");
+    } else if (module.isOperational()) {
       return session.snap();
     } else {
-      return false;
+      Log.e("timoodstocks.notOperational", "");
     }
+
+    return false;
   }
 
   @Kroll.method
