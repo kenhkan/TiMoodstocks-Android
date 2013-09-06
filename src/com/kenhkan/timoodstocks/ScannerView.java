@@ -108,7 +108,7 @@ public class ScannerView extends TiViewProxy implements
     } else if (module.isOperational()) {
       return session.pause();
     } else {
-      Log.e("timoodstocks.notOperational", "");
+      Log.e("timoodstocks.notOperational", "Not pausing because Moodstocks isn't operational");
     }
 
     return false;
@@ -121,7 +121,7 @@ public class ScannerView extends TiViewProxy implements
     } else if (module.isOperational()) {
       return session.resume();
     } else {
-      Log.e("timoodstocks.notOperational", "");
+      Log.e("timoodstocks.notOperational", "Not resuming because Moodstocks isn't operational");
     }
 
     return false;
@@ -134,7 +134,7 @@ public class ScannerView extends TiViewProxy implements
     } else if (module.isOperational()) {
       return session.snap();
     } else {
-      Log.e("timoodstocks.notOperational", "");
+      Log.e("timoodstocks.notOperational", "Not snapping picture because Moodstocks isn't operational");
     }
 
     return false;

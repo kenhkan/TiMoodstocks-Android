@@ -133,6 +133,8 @@ public class TimoodstocksModule extends KrollModule
   public void sync() {
     if (isOperational()) {
       scanner.sync(this);
+    } else {
+      Log.e("timoodstocks.notOperational", "Not syncing because Moodstocks isn't operational");
     }
   }
 
