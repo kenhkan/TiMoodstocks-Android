@@ -154,18 +154,18 @@ public class ScannerView extends TiViewProxy implements
     if (result!=null) {
       HashMap data = new HashMap();
       data.put("value", result.getValue());
-      fireEvent("scanComplete", data);
+      fireEvent("scanHasCompleted", data);
     }
 	}
 
 	@Override
 	public void onScanFailed(MoodstocksError e) {
-    notifyError("scanFailed", e);
+    notifyError("scanHasFailed", e);
 	}
 
 	@Override
 	public void onApiSearchStart() {
-    fireEvent("searchStart", null);
+    fireEvent("searchHasStarted", null);
 	}
 
 	@Override
@@ -173,13 +173,13 @@ public class ScannerView extends TiViewProxy implements
     if (result!=null) {
       HashMap data = new HashMap();
       data.put("value", result.getValue());
-      fireEvent("searchComplete", data);
+      fireEvent("searchHasCompleted", data);
     }
 	}
 
 	@Override
 	public void onApiSearchFailed(MoodstocksError e) {
-    notifyError("searchFailed", e);
+    notifyError("searchHasFailed", e);
 	}
 
 	//----------------------

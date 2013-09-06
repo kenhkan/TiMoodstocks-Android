@@ -88,9 +88,9 @@ public class TimoodstocksModule extends KrollModule
 				scanner.close();
 			} catch (MoodstocksError e) {
         // Output to log
-        Log.e("timoodstocks.scannerCloseFailed", e.toString());
+        Log.e("timoodstocks.scannerCloseHasFailed", e.toString());
         // Also fire an event
-        notifyError("scannerCloseFailed", e);
+        notifyError("scannerCloseHasFailed", e);
       }
 		}
 	}
@@ -123,9 +123,9 @@ public class TimoodstocksModule extends KrollModule
     } catch (MoodstocksError e) {
       this.loggedIn = false;
       // Output to log
-      Log.e("timoodstocks.scannerOpenFailed", e.toString());
+      Log.e("timoodstocks.scannerOpenHasFailed", e.toString());
       // Also fire an event
-      notifyError("scannerOpenFailed", e);
+      notifyError("scannerOpenHasFailed", e);
     }
 	}
 
@@ -148,17 +148,17 @@ public class TimoodstocksModule extends KrollModule
 
 	@Override
 	public void onSyncStart() {
-    this.fireEvent("syncStarted", null);
+    this.fireEvent("syncHasStarted", null);
 	}
 
 	@Override
 	public void onSyncComplete() {
-    this.fireEvent("syncCompleted", null);
+    this.fireEvent("syncHasCompleted", null);
 	}
 
 	@Override
 	public void onSyncFailed(MoodstocksError e) {
-    notifyError("syncFailed", e);
+    notifyError("syncHasFailed", e);
 	}
 
 	@Override
