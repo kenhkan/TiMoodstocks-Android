@@ -11,8 +11,8 @@ copyright: Copyright (c) 2013 by Kenneth Kan
 
 
 # these should not be edited
-name: timoodstocks
-moduleid: com.kenhkan.timoodstocks
-guid: f97ceac1-0094-480f-9161-874e56d5367b
+name: timoodstocks-android
+moduleid: com.kenhkan.timoodstocks.android
+guid: 03a9d70b-588d-4b5c-aa09-41ff32ce5aa6
 platform: android
 minsdk: 3.1.2.GA

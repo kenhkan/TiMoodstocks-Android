@@ -6,7 +6,7 @@
  * Please see the LICENSE included with this distribution for details.
  *
  */
-package com.kenhkan.timoodstocks;
+package com.kenhkan.timoodstocks.android;
 
 import java.util.HashMap;
 
@@ -21,10 +21,10 @@ import org.appcelerator.titanium.TiApplication;
 import com.moodstocks.android.MoodstocksError;
 import com.moodstocks.android.Scanner;
 
-import com.kenhkan.timoodstocks.ScannerView;
+import com.kenhkan.timoodstocks.android.ScannerView;
 
 
-@Kroll.module(name="Timoodstocks", id="com.kenhkan.timoodstocks")
+@Kroll.module(name="Timoodstocks", id="com.kenhkan.timoodstocks.android")
 public class TimoodstocksModule extends KrollModule
   implements Scanner.SyncListener
 {

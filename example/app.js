@@ -24,7 +24,7 @@ log = function(out){
 };
 
 // The module
-var timoodstocks = require('com.kenhkan.timoodstocks');
+var timoodstocks = require('com.kenhkan.timoodstocks.android');
 
 // Events
 timoodstocks.addEventListener('scannerOpenFailed', function(e){

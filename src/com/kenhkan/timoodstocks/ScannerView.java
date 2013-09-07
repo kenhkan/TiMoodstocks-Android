@@ -6,7 +6,7 @@
  * Please see the LICENSE included with this distribution for details.
  *
  */
-package com.kenhkan.timoodstocks;
+package com.kenhkan.timoodstocks.android;
 
 import java.util.HashMap;
 
