@@ -19,14 +19,30 @@ In `build.properties`, put in the proper paths. An example would be:
 
 ## Usage
 
+First, download a binary release on
+(https://github.com/kenhkan/TiMoodstocks-Android/releases)[https://github.com/kenhkan/TiMoodstocks-Android/releases].
+
+Then, put the ZIP file in the [Resources
+directory](http://docs.appcelerator.com/titanium/3.0/#!/guide/Using_a_Module-section-30082372_UsingaModule-Installingamoduleforasingleproject).
+
+Add the following to your project's `tiapp.xml`:
+
+    ...
+    <modules>
+      <module platform="android">com.kenhkan.timoodstocks.android</module>
+    </modules>
+    ...
+
+## Development
+
 Use `ant`:
 
     > ant run.emulator
     > ant run
-    ... run in emulator
+    ... run `example/app.js` in emulator
 
     > ant install
-    ... push to device
+    ... push example to device
 
     > ant
     ... build the module .zip file
