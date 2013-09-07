@@ -4,3 +4,4 @@ libs
 build
 *.zip
 .apt_generated
+dist
